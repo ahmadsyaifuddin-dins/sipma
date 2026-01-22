@@ -34,6 +34,11 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('admin.dashboard'));
         }
 
+        // CEK: Kalau pemagang belum punya data peserta -> Lempar ke Form Daftar
+        if (! $request->user()->peserta) {
+            return redirect()->route('pemagang.daftar');
+        }
+
         return redirect()->intended(route('pemagang.dashboard'));
     }
 

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\PembimbingController;
+use App\Http\Controllers\Admin\VerifikasiController;
+use App\Http\Controllers\Pemagang\PendaftaranController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Pembimbing;
 use App\Models\Peserta;
@@ -33,19 +35,32 @@ Route::middleware('auth')->group(function () {
         })->name('admin.dashboard');
 
         Route::resource('pembimbing', PembimbingController::class, ['as' => 'admin']);
+
+        // Route Verifikasi
+        Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('admin.verifikasi.index');
+        Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('admin.verifikasi.show');
+        Route::post('/verifikasi/{id}/approve', [VerifikasiController::class, 'store'])->name('admin.verifikasi.approve');
+        Route::delete('/verifikasi/{id}/reject', [VerifikasiController::class, 'destroy'])->name('admin.verifikasi.reject');
     });
 
     // --- GROUP PEMAGANG ---
     // URL: /pemagang/dashboard, /pemagang/absensi, dll
     // Wajib Role Pemagang DAN Status Aktif
-    Route::prefix('pemagang')->middleware(['role:pemagang', 'status.aktif'])->group(function () {
+    Route::prefix('pemagang')->middleware(['role:pemagang'])->group(function () {
 
-        // Dashboard Pemagang
-        Route::get('/dashboard', function () {
-            return view('pemagang.dashboard');
-        })->name('pemagang.dashboard');
+        // 1. Route Pendaftaran (Bisa diakses user baru)
+        Route::get('/daftar', [PendaftaranController::class, 'create'])->name('pemagang.daftar');
+        Route::post('/daftar', [PendaftaranController::class, 'store'])->name('pemagang.daftar.store');
 
-        // Nanti Route Absensi & Laporan taruh sini
+        // 2. Group yang butuh STATUS AKTIF (Dashboard, Absensi)
+        Route::middleware(['status.aktif'])->group(function () {
+
+            Route::get('/dashboard', function () {
+                return view('pemagang.dashboard');
+            })->name('pemagang.dashboard');
+
+            // Nanti route absensi disini
+        });
     });
 
     // --- PROFILE (Bawaan Laravel) ---
