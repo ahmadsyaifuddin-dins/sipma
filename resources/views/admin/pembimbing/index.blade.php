@@ -48,10 +48,12 @@
                                             class="text-purple-600 hover:underline">Edit</a>
 
                                         <form action="{{ route('admin.pembimbing.destroy', $item->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin hapus data ini?');">
+                                            class="inline delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:underline">Hapus</button>
+                                            <button type="submit" class="text-red-600 hover:underline mx-1">
+                                                Hapus
+                                            </button>
                                         </form>
                                     </div>
                                 </td>

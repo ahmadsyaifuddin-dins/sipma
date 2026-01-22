@@ -76,7 +76,7 @@
                                         class="text-blue-600 hover:underline">Edit</a>
 
                                     <form action="{{ route('admin.peserta.destroy', $item->id) }}" method="POST"
-                                        onsubmit="return confirm('HATI-HATI! Menghapus data ini akan menghapus akun login dan riwayat absensinya juga. Lanjutkan?');">
+                                        class="inline delete-form">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:underline">Hapus</button>
