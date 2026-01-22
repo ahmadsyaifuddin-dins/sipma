@@ -12,11 +12,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Ambil data peserta dari user yang sedang login
-        // Asumsi: User memiliki relasi 'peserta' (hasOne)
         $peserta = Auth::user()->peserta;
 
-        // Kita kirim variabel $peserta ke view agar kodenya lebih bersih
+        // JIKA BELUM MENGISI BIODATA
+        if (! $peserta) {
+            // Pastikan ini 'pemagang.daftar', BUKAN 'pemagang.daftar.create'
+            return redirect()->route('pemagang.daftar');
+        }
+
         return view('pemagang.dashboard', compact('peserta'));
     }
 

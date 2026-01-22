@@ -25,7 +25,7 @@ class StorePendaftaranRequest extends FormRequest
             'tgl_selesai' => 'required|date|after:tgl_mulai',
 
             // Validasi File (Old School Upload)
-            'foto_profil' => 'required|image|mimes:jpg,jpeg,png|max:2048', // Max 2MB
+            'foto_profil' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048', // Max 2MB
             'file_surat_pengantar' => 'required|mimes:pdf|max:5120', // Max 5MB, PDF Only
         ];
     }

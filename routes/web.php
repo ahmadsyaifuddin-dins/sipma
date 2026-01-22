@@ -1,19 +1,21 @@
 <?php
 
 use App\Http\Controllers\Admin\AbsensiController as AdminAbsensiController;
-use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+// IMPORT CONTROLLER ADMIN
 use App\Http\Controllers\Admin\EvaluasiController as AdminEvaluasiController;
 use App\Http\Controllers\Admin\LaporanController;
-use App\Http\Controllers\Admin\PembimbingController;
+use App\Http\Controllers\Admin\PembimbingController; // Tambah Alias biar gak bentrok
 use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VerifikasiController;
 use App\Http\Controllers\Pemagang\AbsensiController;
+use App\Http\Controllers\Pemagang\DashboardController as PemagangDashboardController;
+// IMPORT CONTROLLER PEMAGANG
 use App\Http\Controllers\Pemagang\EvaluasiController;
 use App\Http\Controllers\Pemagang\PendaftaranController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Pembimbing;
-use App\Models\Peserta;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 // 1. Landing Page (Halaman Depan)
@@ -21,49 +23,45 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// 2. Route Khusus User Status Pending (Agar tidak infinite loop)
+// 2. Route Khusus User Status Pending
 Route::get('/menunggu-persetujuan', function () {
     return view('auth.pending');
 })->middleware(['auth'])->name('menunggu.persetujuan');
 
-// 3. Group Auth (Harus Login Dulu)
+// 3. Group Auth
 Route::middleware('auth')->group(function () {
 
-    // --- GROUP ADMIN ---
-    // URL: /admin/dashboard, /admin/pembimbing, dll
+    // ==========================================
+    // GROUP ADMIN
+    // ==========================================
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class, ['as' => 'admin']);
-        // Dashboard Admin dengan Data Real
-        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+        // Dashboard Admin (Pakai Alias AdminDashboardController)
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
         Route::get('/absensi', [AdminAbsensiController::class, 'index'])->name('admin.absensi.index');
-        Route::put('/absensi/{id}', [AbsensiController::class, 'update'])->name('admin.absensi.update');
+        Route::put('/absensi/{id}', [AbsensiController::class, 'update'])->name('admin.absensi.update'); // Ini numpang update punya pemagang, oke
         Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
 
         Route::resource('pembimbing', PembimbingController::class, ['as' => 'admin']);
         Route::resource('peserta', PesertaController::class, ['as' => 'admin'])->except(['create', 'store', 'show']);
 
-        // Route Verifikasi
+        // Verifikasi
         Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('admin.verifikasi.index');
         Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('admin.verifikasi.show');
         Route::post('/verifikasi/{id}/approve', [VerifikasiController::class, 'store'])->name('admin.verifikasi.approve');
         Route::delete('/verifikasi/{id}/reject', [VerifikasiController::class, 'destroy'])->name('admin.verifikasi.reject');
 
-        // Route Evaluasi
+        // Evaluasi
         Route::get('/evaluasi', [AdminEvaluasiController::class, 'index'])->name('admin.evaluasi.index');
-
-        // Route Form Nilai (Butuh ID Peserta)
         Route::get('/evaluasi/input/{peserta_id}', [AdminEvaluasiController::class, 'create'])->name('admin.evaluasi.create');
         Route::post('/evaluasi/input/{peserta_id}', [AdminEvaluasiController::class, 'store'])->name('admin.evaluasi.store');
-
-        // Route Edit & Update (Butuh ID Evaluasi)
         Route::get('/evaluasi/{id}/edit', [AdminEvaluasiController::class, 'edit'])->name('admin.evaluasi.edit');
         Route::put('/evaluasi/{id}', [AdminEvaluasiController::class, 'update'])->name('admin.evaluasi.update');
 
-        // --- PUSAT LAPORAN ---
+        // Pusat Laporan
         Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
-
-        // Route Cetak PDF per Kategori
         Route::get('/laporan/cetak/peserta', [LaporanController::class, 'cetakPeserta'])->name('admin.laporan.cetak.peserta');
         Route::get('/laporan/cetak/penempatan', [LaporanController::class, 'cetakPenempatan'])->name('admin.laporan.cetak.penempatan');
         Route::get('/laporan/cetak/absensi', [LaporanController::class, 'cetakAbsensi'])->name('admin.laporan.cetak.absensi');
@@ -71,42 +69,42 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan/cetak/pembimbing', [LaporanController::class, 'cetakPembimbing'])->name('admin.laporan.cetak.pembimbing');
     });
 
-    // --- GROUP PEMAGANG ---
-    // URL: /pemagang/dashboard, /pemagang/absensi, dll
-    // Wajib Role Pemagang DAN Status Aktif
+    // ==========================================
+    // GROUP PEMAGANG
+    // ==========================================
     Route::prefix('pemagang')->middleware(['role:pemagang'])->group(function () {
 
-        // 1. Route Pendaftaran (Bisa diakses user baru)
+        // 1. Pendaftaran
         Route::get('/daftar', [PendaftaranController::class, 'create'])->name('pemagang.daftar');
         Route::post('/daftar', [PendaftaranController::class, 'store'])->name('pemagang.daftar.store');
 
-        // 2. Group yang butuh STATUS AKTIF (Dashboard, Absensi)
+        // 2. Dashboard
+        Route::get('/dashboard', [PemagangDashboardController::class, 'index'])->name('pemagang.dashboard');
+
+        // 3. Fitur yang butuh Status Aktif
         Route::middleware(['status.aktif'])->group(function () {
-
-            Route::get('/dashboard', function () {
-                return view('pemagang.dashboard');
-            })->name('pemagang.dashboard');
-
             Route::get('/absensi', [AbsensiController::class, 'index'])->name('pemagang.absensi.index');
             Route::post('/absensi', [AbsensiController::class, 'store'])->name('pemagang.absensi.store');
             Route::put('/absensi/{id}/pulang', [AbsensiController::class, 'absenPulang'])->name('pemagang.absensi.pulang');
+
+            // Ajukan Selesai (Pakai Alias PemagangDashboardController)
+            Route::put('/ajukan-selesai', [PemagangDashboardController::class, 'ajukanSelesai'])->name('pemagang.ajukan.selesai');
         });
 
+        // Evaluasi (Rapor)
         Route::get('/evaluasi', [EvaluasiController::class, 'index'])->name('pemagang.evaluasi.index');
-        Route::put('/ajukan-selesai', [DashboardController::class, 'ajukanSelesai'])->name('pemagang.ajukan.selesai');
     });
 
-    // --- PROFILE (Bawaan Laravel) ---
-    // Biarkan ini agar user bisa ganti password/email
+    // --- PROFILE ---
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 });
 
-// Rute Penyelamat: Jika ada yang nyasar ke /dashboard, lempar sesuai role
+// Rute Penyelamat
 Route::get('/dashboard', function () {
-    if (auth()->user()->role === 'admin') {
+    if (Auth::user()->role === 'admin') {
         return redirect()->route('admin.dashboard');
     }
 
