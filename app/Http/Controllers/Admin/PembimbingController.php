@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\BidangHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePembimbingRequest;
 use App\Http\Requests\UpdatePembimbingRequest;
@@ -19,7 +20,10 @@ class PembimbingController extends Controller
 
     public function create()
     {
-        return view('admin.pembimbing.create');
+        // Panggil data dari Helper
+        $listBidang = BidangHelper::getAll();
+
+        return view('admin.pembimbing.create', compact('listBidang'));
     }
 
     // Gunakan Request Class terpisah (Rule #1)
@@ -34,7 +38,9 @@ class PembimbingController extends Controller
 
     public function edit(Pembimbing $pembimbing)
     {
-        return view('admin.pembimbing.edit', compact('pembimbing'));
+        $listBidang = BidangHelper::getAll();
+
+        return view('admin.pembimbing.edit', compact('pembimbing', 'listBidang'));
     }
 
     public function update(UpdatePembimbingRequest $request, Pembimbing $pembimbing)

@@ -7,8 +7,7 @@
     <x-form.input name="jabatan" label="Jabatan" :value="$pembimbing->jabatan ?? ''" required="true"
         placeholder="Contoh: Pranata Komputer Ahli Muda" />
 
-    <x-form.input name="bidang" label="Bidang / Unit Kerja" :value="$pembimbing->bidang ?? ''" required="true"
-        placeholder="Contoh: Statistik dan Persandian" />
+    <x-form.select name="bidang" label="Bidang / Unit Kerja" :options="$listBidang" :value="$pembimbing->bidang ?? ''" required="true" />
 
     <x-form.input name="no_hp" label="Nomor WhatsApp" :value="$pembimbing->no_hp ?? ''" type="number" />
 
