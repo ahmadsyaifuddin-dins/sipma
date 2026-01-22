@@ -2,25 +2,19 @@
     class="fixed z-20 inset-0 bg-black opacity-50 transition-opacity lg:hidden"></div>
 
 <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
-    class="fixed z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0">
+    class="fixed z-30 inset-y-0 left-0 w-64 transition duration-300 transform bg-gray-900 overflow-y-auto lg:translate-x-0 lg:static lg:inset-0 border-r border-gray-800">
 
-    <div class="flex items-center justify-center mt-8">
-        <div class="flex items-center">
-            <svg class="h-10 w-10 text-indigo-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-            </svg>
-            <span class="text-white text-2xl mx-2 font-semibold">SIPMA Batola</span>
+    <div class="flex items-center justify-center mt-8 mb-6 px-4">
+        <div class="flex flex-col items-center">
+            <img src="{{ asset('logo/kibar.png') }}" alt="Logo Diskominfo Batola" class="h-16 w-auto object-contain mb-2">
+
+            <span class="text-white text-xl font-bold tracking-wider">SIPMA</span>
+            <span class="text-gray-500 text-[10px] uppercase font-semibold tracking-widest">Diskominfo Batola</span>
         </div>
     </div>
+    <nav class="mt-6">
 
-    <nav class="mt-10">
-
-        {{-- ================= MENU KHUSUS ADMIN ================= --}}
+        {{-- MENU KHUSUS ADMIN --}}
         @if (Auth::user()->role === 'admin')
             <x-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                 <x-slot name="icon">
@@ -106,7 +100,7 @@
                 {{ __('Pusat Laporan') }}
             </x-nav-link>
 
-            {{-- ================= MENU KHUSUS PEMAGANG ================= --}}
+            {{-- MENU KHUSUS PEMAGANG --}}
         @elseif(Auth::user()->role === 'pemagang')
             <x-nav-link href="{{ route('pemagang.dashboard') }}" :active="request()->routeIs('pemagang.dashboard')">
                 <x-slot name="icon">
