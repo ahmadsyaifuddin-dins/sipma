@@ -30,15 +30,20 @@
                             </div>
 
                             @php
-                                $photo = Auth::user()->profile_photo_url ?? null;
-                                if (!$photo) {
-                                    $name = urlencode(Auth::user()->name);
-                                    $photo = "https://ui-avatars.com/api/?name={$name}&color=7F9CF5&background=EBF4FF";
+                                $user = Auth::user();
+                                // Cek apakah path foto ada di database
+                                if ($user->profile_photo_path) {
+                                    // Panggil langsung dari public (tanpa storage/)
+                                    $photoUrl = asset($user->profile_photo_path);
+                                } else {
+                                    // Jika null, pakai UI Avatars
+                                    $name = urlencode($user->name);
+                                    $photoUrl = "https://ui-avatars.com/api/?name={$name}&color=7F9CF5&background=EBF4FF";
                                 }
                             @endphp
 
                             <img class="object-cover w-10 h-10 rounded-full border-2 border-indigo-100 shadow-sm"
-                                src="{{ $photo }}" alt="{{ Auth::user()->name }}" aria-hidden="true" />
+                                src="{{ $photoUrl }}" alt="{{ $user->name }}" aria-hidden="true" />
 
                             <svg class="hidden md:block w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 20 20" fill="currentColor">
