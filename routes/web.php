@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\PembimbingController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Pembimbing;
+use App\Models\Peserta;
 use Illuminate\Support\Facades\Route;
 
 // 1. Landing Page (Halaman Depan)
@@ -20,13 +23,16 @@ Route::middleware('auth')->group(function () {
     // URL: /admin/dashboard, /admin/pembimbing, dll
     Route::prefix('admin')->middleware('role:admin')->group(function () {
 
-        // Dashboard Admin
+        // Dashboard Admin dengan Data Real
         Route::get('/dashboard', function () {
-            return view('admin.dashboard');
+            return view('admin.dashboard', [
+                'total_peserta' => Peserta::where('status', 'aktif')->count(),
+                'peserta_pending' => Peserta::where('status', 'pending')->count(),
+                'total_pembimbing' => Pembimbing::count(),
+            ]);
         })->name('admin.dashboard');
 
-        // Nanti Route CRUD Pembimbing kita taruh sini
-        // Route::resource('pembimbing', PembimbingController::class);
+        Route::resource('pembimbing', PembimbingController::class, ['as' => 'admin']);
     });
 
     // --- GROUP PEMAGANG ---
