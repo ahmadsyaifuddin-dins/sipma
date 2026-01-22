@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\PembimbingController;
+use App\Http\Controllers\Admin\PesertaController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VerifikasiController;
+use App\Http\Controllers\Pemagang\AbsensiController;
 use App\Http\Controllers\Pemagang\PendaftaranController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Pembimbing;
@@ -24,7 +27,7 @@ Route::middleware('auth')->group(function () {
     // --- GROUP ADMIN ---
     // URL: /admin/dashboard, /admin/pembimbing, dll
     Route::prefix('admin')->middleware('role:admin')->group(function () {
-
+        Route::resource('users', UserController::class, ['as' => 'admin']);
         // Dashboard Admin dengan Data Real
         Route::get('/dashboard', function () {
             return view('admin.dashboard', [
@@ -35,6 +38,7 @@ Route::middleware('auth')->group(function () {
         })->name('admin.dashboard');
 
         Route::resource('pembimbing', PembimbingController::class, ['as' => 'admin']);
+        Route::resource('peserta', PesertaController::class, ['as' => 'admin'])->except(['create', 'store', 'show']);
 
         // Route Verifikasi
         Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('admin.verifikasi.index');
@@ -59,7 +63,9 @@ Route::middleware('auth')->group(function () {
                 return view('pemagang.dashboard');
             })->name('pemagang.dashboard');
 
-            // Nanti route absensi disini
+            Route::get('/absensi', [AbsensiController::class, 'index'])->name('pemagang.absensi.index');
+            Route::post('/absensi', [AbsensiController::class, 'store'])->name('pemagang.absensi.store');
+            Route::put('/absensi/{id}/pulang', [AbsensiController::class, 'absenPulang'])->name('pemagang.absensi.pulang');
         });
     });
 
