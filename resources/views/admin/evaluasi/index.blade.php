@@ -51,12 +51,12 @@
                                 @if ($item->evaluasi)
                                     <a href="{{ route('admin.evaluasi.edit', $item->evaluasi->id) }}"
                                         class="text-yellow-600 hover:underline text-sm font-medium">
-                                        ✏️ Edit Nilai
+                                        <i class="fas fa-edit"></i> Edit Nilai
                                     </a>
                                 @else
                                     <a href="{{ route('admin.evaluasi.create', $item->id) }}"
                                         class="inline-block px-3 py-1 text-sm font-medium leading-5 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none shadow">
-                                        ★ Input Nilai
+                                        <i class="fas fa-plus"></i> Input Nilai
                                     </a>
                                 @endif
                             </td>
