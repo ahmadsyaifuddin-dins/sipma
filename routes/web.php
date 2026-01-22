@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\Admin\AbsensiController as AdminAbsensiController;
 use App\Http\Controllers\Admin\PembimbingController;
 use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VerifikasiController;
 use App\Http\Controllers\Pemagang\AbsensiController;
+use App\Http\Controllers\Pemagang\EvaluasiController;
 use App\Http\Controllers\Pemagang\PendaftaranController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Pembimbing;
@@ -36,6 +38,10 @@ Route::middleware('auth')->group(function () {
                 'total_pembimbing' => Pembimbing::count(),
             ]);
         })->name('admin.dashboard');
+
+        Route::get('/absensi', [AdminAbsensiController::class, 'index'])->name('admin.absensi.index');
+        Route::put('/absensi/{id}', [AbsensiController::class, 'update'])->name('admin.absensi.update');
+        Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
 
         Route::resource('pembimbing', PembimbingController::class, ['as' => 'admin']);
         Route::resource('peserta', PesertaController::class, ['as' => 'admin'])->except(['create', 'store', 'show']);
@@ -79,6 +85,8 @@ Route::middleware('auth')->group(function () {
             Route::put('/absensi/{id}/pulang', [AbsensiController::class, 'absenPulang'])->name('pemagang.absensi.pulang');
         });
     });
+
+    Route::get('/evaluasi', [EvaluasiController::class, 'index'])->name('pemagang.evaluasi.index');
 
     // --- PROFILE (Bawaan Laravel) ---
     // Biarkan ini agar user bisa ganti password/email
