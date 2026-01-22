@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AbsensiController as AdminAbsensiController;
+use App\Http\Controllers\Admin\EvaluasiController as AdminEvaluasiController;
+use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PembimbingController;
 use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\UserController;
@@ -53,15 +55,25 @@ Route::middleware('auth')->group(function () {
         Route::delete('/verifikasi/{id}/reject', [VerifikasiController::class, 'destroy'])->name('admin.verifikasi.reject');
 
         // Route Evaluasi
-        Route::get('/evaluasi', [App\Http\Controllers\Admin\EvaluasiController::class, 'index'])->name('admin.evaluasi.index');
+        Route::get('/evaluasi', [AdminEvaluasiController::class, 'index'])->name('admin.evaluasi.index');
 
         // Route Form Nilai (Butuh ID Peserta)
-        Route::get('/evaluasi/input/{peserta_id}', [App\Http\Controllers\Admin\EvaluasiController::class, 'create'])->name('admin.evaluasi.create');
-        Route::post('/evaluasi/input/{peserta_id}', [App\Http\Controllers\Admin\EvaluasiController::class, 'store'])->name('admin.evaluasi.store');
+        Route::get('/evaluasi/input/{peserta_id}', [AdminEvaluasiController::class, 'create'])->name('admin.evaluasi.create');
+        Route::post('/evaluasi/input/{peserta_id}', [AdminEvaluasiController::class, 'store'])->name('admin.evaluasi.store');
 
         // Route Edit & Update (Butuh ID Evaluasi)
-        Route::get('/evaluasi/{id}/edit', [App\Http\Controllers\Admin\EvaluasiController::class, 'edit'])->name('admin.evaluasi.edit');
-        Route::put('/evaluasi/{id}', [App\Http\Controllers\Admin\EvaluasiController::class, 'update'])->name('admin.evaluasi.update');
+        Route::get('/evaluasi/{id}/edit', [AdminEvaluasiController::class, 'edit'])->name('admin.evaluasi.edit');
+        Route::put('/evaluasi/{id}', [AdminEvaluasiController::class, 'update'])->name('admin.evaluasi.update');
+
+        // --- PUSAT LAPORAN ---
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
+
+        // Route Cetak PDF per Kategori
+        Route::get('/laporan/cetak/peserta', [LaporanController::class, 'cetakPeserta'])->name('admin.laporan.cetak.peserta');
+        Route::get('/laporan/cetak/penempatan', [LaporanController::class, 'cetakPenempatan'])->name('admin.laporan.cetak.penempatan');
+        Route::get('/laporan/cetak/absensi', [LaporanController::class, 'cetakAbsensi'])->name('admin.laporan.cetak.absensi');
+        Route::get('/laporan/cetak/evaluasi', [LaporanController::class, 'cetakEvaluasi'])->name('admin.laporan.cetak.evaluasi');
+        Route::get('/laporan/cetak/pembimbing', [LaporanController::class, 'cetakPembimbing'])->name('admin.laporan.cetak.pembimbing');
     });
 
     // --- GROUP PEMAGANG ---
