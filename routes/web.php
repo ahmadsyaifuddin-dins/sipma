@@ -45,6 +45,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('admin.verifikasi.show');
         Route::post('/verifikasi/{id}/approve', [VerifikasiController::class, 'store'])->name('admin.verifikasi.approve');
         Route::delete('/verifikasi/{id}/reject', [VerifikasiController::class, 'destroy'])->name('admin.verifikasi.reject');
+
+        // Route Evaluasi
+        Route::get('/evaluasi', [App\Http\Controllers\Admin\EvaluasiController::class, 'index'])->name('admin.evaluasi.index');
+
+        // Route Form Nilai (Butuh ID Peserta)
+        Route::get('/evaluasi/input/{peserta_id}', [App\Http\Controllers\Admin\EvaluasiController::class, 'create'])->name('admin.evaluasi.create');
+        Route::post('/evaluasi/input/{peserta_id}', [App\Http\Controllers\Admin\EvaluasiController::class, 'store'])->name('admin.evaluasi.store');
+
+        // Route Edit & Update (Butuh ID Evaluasi)
+        Route::get('/evaluasi/{id}/edit', [App\Http\Controllers\Admin\EvaluasiController::class, 'edit'])->name('admin.evaluasi.edit');
+        Route::put('/evaluasi/{id}', [App\Http\Controllers\Admin\EvaluasiController::class, 'update'])->name('admin.evaluasi.update');
     });
 
     // --- GROUP PEMAGANG ---
