@@ -52,8 +52,8 @@ class DatabaseSeeder extends Seeder
 
         $pesertaDiah = Peserta::create([
             'user_id' => $userDiah->id,
-            'nim_nisn' => '2110010500',
-            'nama_lengkap' => 'Diah Putri',
+            'nim_nisn' => '22100100',
+            'nama_lengkap' => 'Diah Kurniawati',
             'institusi' => 'UNISKA Banjarmasin',
             'jurusan' => 'Teknik Informatika',
             'no_hp' => '085811223344',

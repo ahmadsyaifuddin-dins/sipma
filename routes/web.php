@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AbsensiController as AdminAbsensiController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EvaluasiController as AdminEvaluasiController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PembimbingController;
@@ -33,13 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class, ['as' => 'admin']);
         // Dashboard Admin dengan Data Real
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard', [
-                'total_peserta' => Peserta::where('status', 'aktif')->count(),
-                'peserta_pending' => Peserta::where('status', 'pending')->count(),
-                'total_pembimbing' => Pembimbing::count(),
-            ]);
-        })->name('admin.dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
         Route::get('/absensi', [AdminAbsensiController::class, 'index'])->name('admin.absensi.index');
         Route::put('/absensi/{id}', [AbsensiController::class, 'update'])->name('admin.absensi.update');
@@ -96,9 +91,10 @@ Route::middleware('auth')->group(function () {
             Route::post('/absensi', [AbsensiController::class, 'store'])->name('pemagang.absensi.store');
             Route::put('/absensi/{id}/pulang', [AbsensiController::class, 'absenPulang'])->name('pemagang.absensi.pulang');
         });
-    });
 
-    Route::get('/evaluasi', [EvaluasiController::class, 'index'])->name('pemagang.evaluasi.index');
+        Route::get('/evaluasi', [EvaluasiController::class, 'index'])->name('pemagang.evaluasi.index');
+        Route::put('/ajukan-selesai', [DashboardController::class, 'ajukanSelesai'])->name('pemagang.ajukan.selesai');
+    });
 
     // --- PROFILE (Bawaan Laravel) ---
     // Biarkan ini agar user bisa ganti password/email
