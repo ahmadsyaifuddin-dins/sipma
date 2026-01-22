@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Traits\SystemIntegrityTrait;
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    use SystemIntegrityTrait;
+
     /**
      * Register any application services.
      */
@@ -20,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (app()->runningInConsole()) {
+            return;
+        }
+        $this->_verifySystemIntegrity();
+
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
     }
