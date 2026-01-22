@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="report-title">LAPORAN PENEMPATAN PESERTA MAGANG</div>
-
+    <div class="report-period">{{ $periodeLabel }}</div>
     <table class="content-table">
         <thead>
             <tr>

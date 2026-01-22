@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="report-title">DAFTAR PEMBIMBING LAPANGAN DISKOMINFO</div>
-
+    <div class="report-period">{{ $periodeLabel }}</div>
     <table class="content-table">
         <thead>
             <tr>

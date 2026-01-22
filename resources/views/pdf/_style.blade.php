@@ -10,29 +10,36 @@
     /* KOP SURAT (Menggunakan Table agar presisi) */
     .header-table {
         width: 100%;
-        border-bottom: 3px double #000; /* Garis ganda di bawah kop */
+        border-bottom: 3px double #000;
+        /* Garis ganda di bawah kop */
         margin-bottom: 20px;
         padding-bottom: 10px;
     }
+
     .logo-cell {
-        width: 80px; /* Ukuran kolom logo */
+        width: 80px;
+        /* Ukuran kolom logo */
         text-align: center;
         vertical-align: middle;
     }
+
     .logo-img {
         width: 70px;
         height: auto;
     }
+
     .text-cell {
         text-align: center;
         vertical-align: middle;
     }
+
     .instansi-name {
         font-size: 16px;
         font-weight: bold;
         text-transform: uppercase;
         margin: 0;
     }
+
     .instansi-address {
         font-size: 10px;
         margin-top: 5px;
@@ -45,18 +52,21 @@
         border-collapse: collapse;
         margin-top: 10px;
     }
-    .content-table th, .content-table td {
+
+    .content-table th,
+    .content-table td {
         border: 1px solid #000;
         padding: 6px;
         text-align: left;
         vertical-align: top;
     }
+
     .content-table th {
         background-color: #f0f0f0;
         text-align: center;
         font-weight: bold;
     }
-    
+
     /* JUDUL LAPORAN */
     .report-title {
         text-align: center;
@@ -74,14 +84,27 @@
         /* Teknik float untuk memposisikan di kanan bawah */
         page-break-inside: avoid;
     }
+
     .signature-box {
         float: right;
         width: 250px;
         text-align: center;
     }
+
     .signature-name {
         font-weight: bold;
         text-decoration: underline;
-        margin-top: 70px; /* Jarak untuk tanda tangan basah */
+        margin-top: 70px;
+        /* Jarak untuk tanda tangan basah */
+    }
+
+    .report-period {
+        text-align: center;
+        font-size: 11px;
+        margin-top: -15px;
+        /* Tarik ke atas mendekati judul */
+        margin-bottom: 20px;
+        font-style: italic;
+        color: #555;
     }
 </style>
