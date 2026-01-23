@@ -7,7 +7,7 @@
             <h2 class="text-lg font-semibold text-gray-700">Daftar Akun Login</h2>
             <a href="{{ route('admin.users.create') }}"
                 class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
-                + Tambah Admin / User
+                + Tambah Pengguna
             </a>
         </div>
 
