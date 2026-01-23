@@ -1,4 +1,4 @@
-<header class="z-10 py-4 bg-white shadow-sm border-b-4 border-indigo-600">
+<header class="z-10 py-4 bg-white shadow-sm border-b-4 border-gray-900">
     <div class="flex items-center justify-between h-full px-6 mx-auto">
 
         <button @click="sidebarOpen = true"
