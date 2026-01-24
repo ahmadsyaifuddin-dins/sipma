@@ -13,9 +13,11 @@ class UserController extends Controller
 {
     public function index()
     {
-        // Tampilkan semua user, kecuali diri sendiri (biar gak sengaja kehapus)
-        // Atau tampilkan semua juga boleh, kita handle di view/destroy
-        $users = User::latest()->paginate(10);
+        // FILTER: Hanya ambil user dengan role 'admin' atau 'pembimbing'
+        // Pemagang tidak ikut dipanggil.
+        $users = User::whereIn('role', ['admin', 'pembimbing'])
+            ->latest()
+            ->paginate(10);
 
         return view('admin.users.index', compact('users'));
     }
