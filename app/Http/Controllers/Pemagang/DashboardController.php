@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pemagang;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -14,13 +15,61 @@ class DashboardController extends Controller
     {
         $peserta = Auth::user()->peserta;
 
-        // JIKA BELUM MENGISI BIODATA
         if (! $peserta) {
-            // Pastikan ini 'pemagang.daftar', BUKAN 'pemagang.daftar.create'
             return redirect()->route('pemagang.daftar');
         }
 
-        return view('pemagang.dashboard', compact('peserta'));
+        // Statistik Absensi
+        $hadir = $peserta->absensi()->where('status', 'hadir')->count();
+        $izin = $peserta->absensi()->where('status', 'izin')->count();
+        $sakit = $peserta->absensi()->where('status', 'sakit')->count();
+        $alpha = $peserta->absensi()->where('status', 'alpha')->count();
+
+        // 1. Kita reset jam ke 00:00:00 (startOfDay) agar hitungan bulat
+        $tgl_mulai = Carbon::parse($peserta->tgl_mulai)->startOfDay();
+        $tgl_selesai = Carbon::parse($peserta->tgl_selesai)->startOfDay();
+        $sekarang = Carbon::now()->startOfDay();
+
+        // 2. Hitung Total Durasi
+        $total_hari = $tgl_mulai->diffInDays($tgl_selesai);
+
+        // 3. Default Value
+        $hari_berjalan = 0;
+        $sisa_waktu = $total_hari;
+        $progress_persen = 0;
+
+        // 4. Logika Kondisi
+        if ($sekarang->lessThan($tgl_mulai)) {
+            // BELUM MULAI
+            $hari_berjalan = 0;
+            $sisa_waktu = $total_hari;
+            $progress_persen = 0;
+
+        } elseif ($sekarang->greaterThan($tgl_selesai)) {
+            // SUDAH SELESAI
+            $hari_berjalan = $total_hari;
+            $sisa_waktu = 0;
+            $progress_persen = 100;
+
+        } else {
+            // SEDANG BERJALAN
+            // Kita paksa jadi integer (int) biar gak ada koma
+            $hari_berjalan = (int) $tgl_mulai->diffInDays($sekarang);
+            $sisa_waktu = (int) $sekarang->diffInDays($tgl_selesai);
+
+            // Hitung Persen
+            if ($total_hari > 0) {
+                $progress_persen = round(($hari_berjalan / $total_hari) * 100);
+            } else {
+                $progress_persen = 100;
+            }
+        }
+
+        return view('pemagang.dashboard.index', compact(
+            'peserta',
+            'hadir', 'izin', 'sakit', 'alpha',
+            'progress_persen', 'total_hari', 'hari_berjalan', 'sisa_waktu'
+        ));
     }
 
     /**
