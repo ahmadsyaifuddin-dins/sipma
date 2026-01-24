@@ -35,6 +35,17 @@ class PesertaController extends Controller
         return view('admin.peserta.index', compact('data'));
     }
 
+    // Tambahkan method ini di PesertaController
+    public function show($id)
+    {
+        // Ambil data peserta beserta relasinya
+        $peserta = Peserta::with(['penempatan.pembimbing', 'user'])->findOrFail($id);
+
+        // Return VIEW PARTIAL (Hanya potongan HTML untuk isi modal)
+        // Kita belum buat view-nya, habis ini kita buat.
+        return view('admin.peserta._detail_modal', compact('peserta'));
+    }
+
     // 2. FORM EDIT (Misal: Salah nama, atau mau ganti Pembimbing)
     public function edit($id)
     {

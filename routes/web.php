@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
 
         Route::resource('pembimbing', PembimbingController::class, ['as' => 'admin']);
-        Route::resource('peserta', PesertaController::class, ['as' => 'admin'])->except(['create', 'store', 'show']);
+        Route::resource('peserta', PesertaController::class, ['as' => 'admin'])->except(['create', 'store']);
 
         // Verifikasi
         Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('admin.verifikasi.index');

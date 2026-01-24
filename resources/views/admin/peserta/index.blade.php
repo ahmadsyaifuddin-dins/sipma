@@ -1,11 +1,34 @@
 <x-app-layout>
     <x-slot name="header">Data Peserta Magang</x-slot>
 
-    <div class="p-4 bg-white rounded-lg shadow-xs">
+    <div x-data="{
+        open: false,
+        isLoading: false,
+        modalContent: '',
+    
+        // FUNGSI UNTUK FETCH DATA MODAL
+        async openModal(url) {
+            this.open = true;
+            this.isLoading = true;
+            this.modalContent = ''; // Reset konten
+    
+            try {
+                let response = await fetch(url);
+                if (response.ok) {
+                    this.modalContent = await response.text();
+                } else {
+                    this.modalContent = '<div class=\'p-4 text-center text-red-500\'>Gagal memuat data.</div>';
+                }
+            } catch (error) {
+                this.modalContent = '<div class=\'p-4 text-center text-red-500\'>Terjadi kesalahan jaringan.</div>';
+            } finally {
+                this.isLoading = false;
+            }
+        }
+    }" class="p-4 bg-white rounded-lg shadow-xs relative">
 
         <form method="GET" action="{{ route('admin.peserta.index') }}"
             class="mb-6 flex flex-col md:flex-row gap-4 justify-between">
-
             <div class="flex items-center gap-2">
                 <span class="text-sm text-gray-600">Filter Status:</span>
                 <select name="status" onchange="this.form.submit()"
@@ -16,7 +39,6 @@
                     <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
                 </select>
             </div>
-
             <div class="flex gap-2">
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama / NIM..."
                     class="border-gray-300 rounded text-sm w-full md:w-64 focus:ring-indigo-500">
@@ -30,7 +52,6 @@
                 <thead class="bg-gray-50 border-b">
                     <tr class="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase">
                         <th class="px-4 py-3 text-center" width="80">Foto</th>
-
                         <th class="px-4 py-3">Peserta</th>
                         <th class="px-4 py-3">Institusi</th>
                         <th class="px-4 py-3">Pembimbing & Ruangan</th>
@@ -41,10 +62,8 @@
                 <tbody class="bg-white divide-y">
                     @forelse($data as $item)
                         <tr class="text-gray-700 hover:bg-gray-50 transition">
-
                             <td class="px-4 py-3 text-center">
                                 @php
-                                    // Logic Foto: Jika ada file tampilkan, jika tidak pakai UI Avatars
                                     $avatar = $item->foto_profil
                                         ? asset($item->foto_profil)
                                         : 'https://ui-avatars.com/api/?name=' .
@@ -53,22 +72,20 @@
                                 @endphp
                                 <div class="relative w-10 h-10 mx-auto">
                                     <img class="object-cover w-full h-full rounded-full border border-gray-200 shadow-sm hover:scale-150 transition-transform duration-200 cursor-pointer"
-                                        src="{{ $avatar }}" alt="Avatar" title="{{ $item->nama_lengkap }}">
+                                        src="{{ $avatar }}" alt="Avatar" {{-- KLIK FOTO JUGA BISA BUKA MODAL --}}
+                                        @click="openModal('{{ route('admin.peserta.show', $item->id) }}')">
                                 </div>
                             </td>
-
                             <td class="px-4 py-3">
                                 <div class="font-bold text-gray-800">{{ $item->nama_lengkap }}</div>
                                 <div class="text-xs text-gray-500 font-mono bg-gray-100 inline-block px-1 rounded">
                                     {{ $item->nim_nisn }}
                                 </div>
                             </td>
-
                             <td class="px-4 py-3 text-sm">
                                 <div class="font-semibold">{{ $item->institusi }}</div>
                                 <span class="text-xs text-gray-400">{{ $item->jurusan }}</span>
                             </td>
-
                             <td class="px-4 py-3 text-sm">
                                 @if ($item->penempatan)
                                     <div class="flex items-center gap-2">
@@ -84,7 +101,6 @@
                                     <span class="text-gray-400 italic text-xs">- Belum ditempatkan -</span>
                                 @endif
                             </td>
-
                             <td class="px-4 py-3 text-xs">
                                 @php
                                     $colors = [
@@ -101,11 +117,16 @@
                                     {{ str_replace('_', ' ', ucfirst($item->status)) }}
                                 </span>
                             </td>
-
                             <td class="px-4 py-3 text-center">
                                 <div class="flex items-center justify-center gap-3">
+
+                                    <button @click="openModal('{{ route('admin.peserta.show', $item->id) }}')"
+                                        class="text-blue-500 hover:text-blue-700 transition" title="Lihat Detail">
+                                        <i class="fas fa-eye text-lg"></i>
+                                    </button>
+
                                     <a href="{{ route('admin.peserta.edit', $item->id) }}"
-                                        class="text-blue-500 hover:text-blue-700 transition" title="Edit Data">
+                                        class="text-yellow-500 hover:text-yellow-700 transition" title="Edit Data">
                                         <i class="fas fa-edit text-lg"></i>
                                     </a>
 
@@ -137,6 +158,30 @@
 
         <div class="mt-4">
             {{ $data->links() }}
+        </div>
+
+        <div x-show="open" style="display: none;"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4"
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+
+            <div @click.away="open = false"
+                class="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all overflow-hidden"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                x-transition:leave-end="opacity-0 scale-95 translate-y-4">
+
+                <div x-show="isLoading" class="p-12 text-center">
+                    <i class="fas fa-circle-notch fa-spin text-4xl text-indigo-600 mb-4"></i>
+                    <p class="text-gray-500 font-medium">Sedang memuat data...</p>
+                </div>
+
+                <div x-show="!isLoading" x-html="modalContent"></div>
+            </div>
         </div>
     </div>
 </x-app-layout>
