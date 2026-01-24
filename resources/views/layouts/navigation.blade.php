@@ -29,7 +29,7 @@
                 <x-slot name="icon">
                     <i class="fas fa-users-cog text-lg w-6 text-center"></i>
                 </x-slot>
-                {{ __('Manajemen Administrator') }}
+                {{ __('Manajemen Admin') }}
             </x-nav-link>
 
             <x-nav-link href="{{ route('admin.pembimbing.index') }}" :active="request()->routeIs('admin.pembimbing.*')">
