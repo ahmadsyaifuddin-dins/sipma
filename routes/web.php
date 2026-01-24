@@ -23,7 +23,17 @@ use Illuminate\Support\Facades\Route;
 // 1. Landing Page (Halaman Depan)
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('home');
+
+// Halaman Tentang PKL
+Route::get('/tentang-pkl', function () {
+    return view('landing.tentang');
+})->name('landing.tentang');
+
+// Halaman Panduan
+Route::get('/panduan', function () {
+    return view('landing.panduan');
+})->name('landing.panduan');
 
 // 2. Route Khusus User Status Pending
 Route::get('/menunggu-persetujuan', function () {

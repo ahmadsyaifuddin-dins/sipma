@@ -62,9 +62,12 @@
                 </div>
 
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition">Beranda</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition">Tentang PKL</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition">Panduan</a>
+                    <a href="{{ route('home') }}"
+                        class="text-gray-600 hover:text-blue-600 font-medium transition">Beranda</a>
+                    <a href="{{ route('landing.tentang') }}"
+                        class="text-gray-600 hover:text-blue-600 font-medium transition">Tentang PKL</a>
+                    <a href="{{ route('landing.panduan') }}"
+                        class="text-gray-600 hover:text-blue-600 font-medium transition">Panduan</a>
 
                     @if (Route::has('login'))
                         @auth
