@@ -1,7 +1,7 @@
 <table class="header-table">
     <tr>
         <td class="logo-cell">
-            <img src="{{ public_path('logo/kibar.png') }}" class="logo-img" alt="Logo">
+            <img src="{{ public_path('logo/selidah.png') }}" class="logo-img" alt="Logo">
         </td>
         <td class="text-cell">
             <h2 class="instansi-name">Pemerintah Kabupaten Barito Kuala</h2>
