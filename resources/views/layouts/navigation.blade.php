@@ -43,7 +43,7 @@
                 <x-slot name="icon">
                     <i class="fas fa-user-check text-lg w-6 text-center"></i>
                 </x-slot>
-                {{ __('Verifikasi Pendaftar') }}
+                {{ __('Verifikasi Peserta') }}
             </x-nav-link>
 
             <x-nav-link href="{{ route('admin.penempatan.index') }}" :active="request()->routeIs('admin.penempatan.*')">
@@ -88,6 +88,13 @@
                     <i class="fas fa-home text-lg w-6 text-center"></i>
                 </x-slot>
                 {{ __('Dashboard') }}
+            </x-nav-link>
+
+            <x-nav-link href="{{ route('pemagang.penempatan.index') }}" :active="request()->routeIs('pemagang.penempatan.*')">
+                <x-slot name="icon">
+                    <i class="fas fa-map-marked-alt text-lg w-6 text-center"></i>
+                </x-slot>
+                {{ __('Info Penempatan') }}
             </x-nav-link>
 
             {{-- HANYA TAMPIL JIKA DATA PESERTA SUDAH ADA --}}

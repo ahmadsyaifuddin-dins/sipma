@@ -15,6 +15,7 @@ use App\Http\Controllers\Pemagang\DashboardController as PemagangDashboardContro
 // IMPORT CONTROLLER PEMAGANG
 use App\Http\Controllers\Pemagang\EvaluasiController;
 use App\Http\Controllers\Pemagang\PendaftaranController;
+use App\Http\Controllers\Pemagang\PenempatanController as PemagangPenempatanController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -85,6 +86,9 @@ Route::middleware('auth')->group(function () {
 
         // 2. Dashboard
         Route::get('/dashboard', [PemagangDashboardController::class, 'index'])->name('pemagang.dashboard');
+
+        Route::get('/penempatan', [PemagangPenempatanController::class, 'index'])
+            ->name('pemagang.penempatan.index');
 
         // 3. Fitur yang butuh Status Aktif
         Route::middleware(['status.aktif'])->group(function () {
