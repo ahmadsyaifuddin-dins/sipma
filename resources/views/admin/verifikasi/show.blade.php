@@ -132,10 +132,24 @@
                             </div>
 
                             <div class="relative">
-                                <x-form.input name="ruangan" label="Ruangan / Unit Kerja"
-                                    placeholder="Cth: Ruang Server" required="true" />
-                                <div class="absolute top-9 right-3 text-gray-400">
-                                    <i class="fas fa-building"></i>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Ruangan / Unit Kerja</label>
+
+                                <div class="relative">
+                                    <select name="ruangan" required
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm appearance-none bg-white py-2 pl-3 pr-10">
+
+                                        <option value="" disabled selected>-- Pilih Ruangan --</option>
+
+                                        @foreach (\App\Helpers\BidangHelper::getAll() as $ruang)
+                                            <option value="{{ $ruang }}">{{ $ruang }}</option>
+                                        @endforeach
+
+                                    </select>
+
+                                    <div
+                                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                                        <i class="fas fa-building"></i>
+                                    </div>
                                 </div>
                             </div>
 
