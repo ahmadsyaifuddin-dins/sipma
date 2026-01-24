@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/evaluasi/input/{peserta_id}', [AdminEvaluasiController::class, 'store'])->name('admin.evaluasi.store');
         Route::get('/evaluasi/{id}/edit', [AdminEvaluasiController::class, 'edit'])->name('admin.evaluasi.edit');
         Route::put('/evaluasi/{id}', [AdminEvaluasiController::class, 'update'])->name('admin.evaluasi.update');
+        Route::get('/evaluasi/{id}', [AdminEvaluasiController::class, 'show'])->name('admin.evaluasi.show');
+        Route::delete('/evaluasi/{id}', [AdminEvaluasiController::class, 'destroy'])->name('admin.evaluasi.destroy');
 
         // Pusat Laporan
         Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');

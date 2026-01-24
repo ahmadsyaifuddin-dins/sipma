@@ -15,7 +15,7 @@ class EvaluasiController extends Controller
         // Hanya ambil peserta yang statusnya 'aktif' atau 'selesai'
         // dan load relasi evaluasi (untuk cek sudah dinilai belum)
         $peserta = Peserta::with(['evaluasi', 'penempatan.pembimbing'])
-            ->whereIn('status', ['aktif', 'selesai'])
+            ->whereIn('status', ['aktif', 'selesai', 'menunggu_nilai'])
             ->latest()
             ->paginate(10);
 
@@ -38,39 +38,60 @@ class EvaluasiController extends Controller
     // 3. PROSES SIMPAN NILAI (LOGIC UTAMA)
     public function store(Request $request, $peserta_id)
     {
+        // 1. Validasi 10 Aspek
         $request->validate([
             'nilai_disiplin' => 'required|numeric|min:0|max:100',
+            'nilai_etika' => 'required|numeric|min:0|max:100',
+            'nilai_motivasi' => 'required|numeric|min:0|max:100',
+            'nilai_kualitas' => 'required|numeric|min:0|max:100',
+            'nilai_penguasaan' => 'required|numeric|min:0|max:100',
+            'nilai_produktivitas' => 'required|numeric|min:0|max:100',
             'nilai_kerjasama' => 'required|numeric|min:0|max:100',
+            'nilai_komunikasi' => 'required|numeric|min:0|max:100',
             'nilai_inisiatif' => 'required|numeric|min:0|max:100',
-            'nilai_kerajinan' => 'required|numeric|min:0|max:100',
+            'nilai_adaptasi' => 'required|numeric|min:0|max:100',
             'catatan_pembimbing' => 'nullable|string',
         ]);
 
-        // Hitung Rata-rata
-        $rataRata = ($request->nilai_disiplin + $request->nilai_kerjasama + $request->nilai_inisiatif + $request->nilai_kerajinan) / 4;
+        // 2. Hitung Rata-rata (Total / 10)
+        $total = $request->nilai_disiplin + $request->nilai_etika + $request->nilai_motivasi +
+                 $request->nilai_kualitas + $request->nilai_penguasaan + $request->nilai_produktivitas +
+                 $request->nilai_kerjasama + $request->nilai_komunikasi + $request->nilai_inisiatif +
+                 $request->nilai_adaptasi;
 
-        // Tentukan Predikat (Sesuai requestmu: Otomatis)
+        $rataRata = $total / 10;
+
+        // 3. Tentukan Predikat
         $predikat = $this->hitungPredikat($rataRata);
 
+        // 4. Simpan
         Evaluasi::create([
             'peserta_id' => $peserta_id,
+            // Insert semua field baru
             'nilai_disiplin' => $request->nilai_disiplin,
+            'nilai_etika' => $request->nilai_etika,
+            'nilai_motivasi' => $request->nilai_motivasi,
+            'nilai_kualitas' => $request->nilai_kualitas,
+            'nilai_penguasaan' => $request->nilai_penguasaan,
+            'nilai_produktivitas' => $request->nilai_produktivitas,
             'nilai_kerjasama' => $request->nilai_kerjasama,
+            'nilai_komunikasi' => $request->nilai_komunikasi,
             'nilai_inisiatif' => $request->nilai_inisiatif,
-            'nilai_kerajinan' => $request->nilai_kerajinan,
+            'nilai_adaptasi' => $request->nilai_adaptasi,
+
             'nilai_rata_rata' => $rataRata,
             'predikat_huruf' => $predikat['huruf'],
             'predikat_keterangan' => $predikat['ket'],
             'catatan_pembimbing' => $request->catatan_pembimbing,
         ]);
 
-        // Opsional: Ubah status peserta jadi 'Selesai' jika belum
+        // Update Status Peserta
         $peserta = Peserta::findOrFail($peserta_id);
         if ($peserta->status == 'aktif') {
             $peserta->update(['status' => 'selesai']);
         }
 
-        return redirect()->route('admin.evaluasi.index')->with('success', 'Penilaian berhasil disimpan. Peserta dinyatakan LULUS.');
+        return redirect()->route('admin.evaluasi.index')->with('success', 'Penilaian Lengkap Berhasil Disimpan.');
     }
 
     // 4. FORM EDIT (Jika ada revisi nilai)
@@ -88,27 +109,67 @@ class EvaluasiController extends Controller
 
         $request->validate([
             'nilai_disiplin' => 'required|numeric|min:0|max:100',
+            'nilai_etika' => 'required|numeric|min:0|max:100',
+            'nilai_motivasi' => 'required|numeric|min:0|max:100',
+            'nilai_kualitas' => 'required|numeric|min:0|max:100',
+            'nilai_penguasaan' => 'required|numeric|min:0|max:100',
+            'nilai_produktivitas' => 'required|numeric|min:0|max:100',
             'nilai_kerjasama' => 'required|numeric|min:0|max:100',
+            'nilai_komunikasi' => 'required|numeric|min:0|max:100',
             'nilai_inisiatif' => 'required|numeric|min:0|max:100',
-            'nilai_kerajinan' => 'required|numeric|min:0|max:100',
+            'nilai_adaptasi' => 'required|numeric|min:0|max:100',
         ]);
 
         // Hitung ulang
-        $rataRata = ($request->nilai_disiplin + $request->nilai_kerjasama + $request->nilai_inisiatif + $request->nilai_kerajinan) / 4;
+        $total = $request->nilai_disiplin + $request->nilai_etika + $request->nilai_motivasi +
+                 $request->nilai_kualitas + $request->nilai_penguasaan + $request->nilai_produktivitas +
+                 $request->nilai_kerjasama + $request->nilai_komunikasi + $request->nilai_inisiatif +
+                 $request->nilai_adaptasi;
+
+        $rataRata = $total / 10;
         $predikat = $this->hitungPredikat($rataRata);
 
         $evaluasi->update([
             'nilai_disiplin' => $request->nilai_disiplin,
+            'nilai_etika' => $request->nilai_etika,
+            'nilai_motivasi' => $request->nilai_motivasi,
+            'nilai_kualitas' => $request->nilai_kualitas,
+            'nilai_penguasaan' => $request->nilai_penguasaan,
+            'nilai_produktivitas' => $request->nilai_produktivitas,
             'nilai_kerjasama' => $request->nilai_kerjasama,
+            'nilai_komunikasi' => $request->nilai_komunikasi,
             'nilai_inisiatif' => $request->nilai_inisiatif,
-            'nilai_kerajinan' => $request->nilai_kerajinan,
+            'nilai_adaptasi' => $request->nilai_adaptasi,
             'nilai_rata_rata' => $rataRata,
             'predikat_huruf' => $predikat['huruf'],
             'predikat_keterangan' => $predikat['ket'],
             'catatan_pembimbing' => $request->catatan_pembimbing,
         ]);
 
-        return redirect()->route('admin.evaluasi.index')->with('success', 'Nilai evaluasi berhasil diperbarui.');
+        return redirect()->route('admin.evaluasi.index')->with('success', 'Nilai evaluasi diperbarui.');
+    }
+
+    public function show($id)
+    {
+        // $id di sini adalah ID EVALUASI, bukan ID Peserta
+        $evaluasi = Evaluasi::with('peserta')->findOrFail($id);
+
+        // Return view partial untuk isi modal
+        return view('admin.evaluasi._detail_modal', compact('evaluasi'));
+    }
+
+    // 7. HAPUS PENILAIAN
+    public function destroy($id)
+    {
+        $evaluasi = Evaluasi::findOrFail($id);
+
+        // Kembalikan status peserta jadi Aktif (agar bisa dinilai ulang / belum selesai)
+        $peserta = Peserta::findOrFail($evaluasi->peserta_id);
+        $peserta->update(['status' => 'aktif']);
+
+        $evaluasi->delete();
+
+        return redirect()->route('admin.evaluasi.index')->with('success', 'Data evaluasi berhasil dihapus.');
     }
 
     // Helper Function (Private)

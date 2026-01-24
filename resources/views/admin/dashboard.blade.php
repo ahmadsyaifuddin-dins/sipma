@@ -24,7 +24,61 @@
         </div>
     </div>
 
-    <div class="grid gap-6 mb-8 md:grid-cols-3">
+    {{-- ============================================================== --}}
+    {{-- NOTIFIKASI PENGAJUAN PENYELESAIAN (STATUS: MENUNGGU NILAI)     --}}
+    {{-- ============================================================== --}}
+    @if ($pengajuan_selesai->count() > 0)
+        <div class="mb-8 bg-white rounded-xl shadow-md border-l-4 border-blue-500 overflow-hidden animate-fade-in-down">
+            <div class="p-5 border-b border-gray-100 bg-blue-50 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-500 text-white rounded-lg animate-pulse">
+                        <i class="fas fa-bell text-xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-lg">Permintaan Penilaian Masuk!</h4>
+                        <p class="text-sm text-blue-700">Ada <strong>{{ $pengajuan_selesai->count() }}</strong> peserta
+                            mengajukan penyelesaian magang.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divide-y divide-gray-100">
+                @foreach ($pengajuan_selesai as $item)
+                    <div
+                        class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-gray-50 transition">
+                        <div class="flex items-center gap-4">
+                            <img src="{{ $item->foto_profil ? asset($item->foto_profil) : 'https://ui-avatars.com/api/?name=' . urlencode($item->nama_lengkap) }}"
+                                class="w-12 h-12 rounded-full object-cover border border-gray-200">
+                            <div>
+                                <h5 class="font-bold text-gray-800">{{ $item->nama_lengkap }}</h5>
+                                <div class="text-xs text-gray-500 flex flex-col sm:flex-row gap-1 sm:gap-3">
+                                    <span><i class="fas fa-id-card mr-1"></i> {{ $item->nim_nisn }}</span>
+                                    <span class="hidden sm:inline">•</span>
+                                    <span><i class="fas fa-building mr-1"></i> {{ $item->institusi }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="text-right hidden md:block mr-4">
+                                <p class="text-xs text-gray-500">Pembimbing:</p>
+                                <p class="text-sm font-semibold text-gray-700">
+                                    {{ $item->penempatan->pembimbing->nama ?? '-' }}</p>
+                            </div>
+
+                            {{-- TOMBOL AKSI: MENUJU FORM PENILAIAN --}}
+                            <a href="{{ route('admin.evaluasi.create', $item->id) }}"
+                                class="px-5 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg shadow hover:bg-blue-700 hover:shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                                <i class="fas fa-star"></i> Input Nilai
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    <div class="grid gap-6 mb-8 md:grid-cols-4">
 
         <div
             class="flex flex-col p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300 border border-gray-100">
@@ -87,6 +141,28 @@
                 <a href="{{ route('admin.pembimbing.index') }}"
                     class="text-sm text-green-600 hover:text-green-800 font-medium flex items-center group">
                     Kelola pembimbing <i
+                        class="fas fa-arrow-right ml-1 transform group-hover:translate-x-1 transition"></i>
+                </a>
+            </div>
+        </div>
+
+        <div
+            class="flex flex-col p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition duration-300 border border-gray-100">
+            <div class="flex items-center">
+                <div class="p-3 mr-4 text-purple-500 bg-purple-100 rounded-full">
+                    <i class="fas fa-clipboard-check text-xl"></i>
+                </div>
+                <div>
+                    <p class="mb-1 text-sm font-medium text-gray-600">Perlu Dinilai</p>
+                    <p class="text-2xl font-bold text-gray-800">
+                        {{ $total_menunggu_nilai ?? 0 }}
+                    </p>
+                </div>
+            </div>
+            <div class="mt-4 border-t pt-3">
+                <a href="{{ route('admin.evaluasi.index') }}"
+                    class="text-sm text-purple-600 hover:text-purple-800 font-medium flex items-center group">
+                    Lihat data evaluasi <i
                         class="fas fa-arrow-right ml-1 transform group-hover:translate-x-1 transition"></i>
                 </a>
             </div>

@@ -2,9 +2,15 @@
 
 <div x-data="calculator(
     {{ $evaluasi->nilai_disiplin ?? 0 }},
+    {{ $evaluasi->nilai_etika ?? 0 }},
+    {{ $evaluasi->nilai_motivasi ?? 0 }},
+    {{ $evaluasi->nilai_kualitas ?? 0 }},
+    {{ $evaluasi->nilai_penguasaan ?? 0 }},
+    {{ $evaluasi->nilai_produktivitas ?? 0 }},
     {{ $evaluasi->nilai_kerjasama ?? 0 }},
+    {{ $evaluasi->nilai_komunikasi ?? 0 }},
     {{ $evaluasi->nilai_inisiatif ?? 0 }},
-    {{ $evaluasi->nilai_kerajinan ?? 0 }}
+    {{ $evaluasi->nilai_adaptasi ?? 0 }}
 )" x-init="calculate()" class="relative">
 
     @include('admin.evaluasi.partials._header_info')
