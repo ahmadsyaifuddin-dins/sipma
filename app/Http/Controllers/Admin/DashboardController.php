@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Absensi; // Pastikan Import Model Absensi
+use App\Models\Absensi;
 use App\Models\Pembimbing;
 use App\Models\Peserta;
-use Illuminate\Support\Facades\DB; // Import DB Facade
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -24,7 +24,7 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
-        // 3. [BARU] DATA GRAFIK (Pendaftar per Bulan Tahun Ini)
+        // 3. DATA GRAFIK (Pendaftar per Bulan Tahun Ini)
         // Mengambil jumlah pendaftar dikelompokkan berdasarkan bulan
         $grafik_pendaftar = Peserta::select(DB::raw('COUNT(*) as count'), DB::raw('MONTHNAME(created_at) as month_name'), DB::raw('MONTH(created_at) as month_num'))
             ->whereYear('created_at', date('Y'))
@@ -36,7 +36,7 @@ class DashboardController extends Controller
         $chart_labels = $grafik_pendaftar->pluck('month_name');
         $chart_data = $grafik_pendaftar->pluck('count');
 
-        // 4. [BARU] DATA NOTIFIKASI AKTIVITAS (Gabungan Absensi & Pendaftar)
+        // 4. DATA NOTIFIKASI AKTIVITAS (Gabungan Absensi & Pendaftar)
         // Ambil 5 Absensi Terakhir
         $log_absensi = Absensi::with('peserta')
             ->latest()
@@ -75,9 +75,9 @@ class DashboardController extends Controller
             'total_pembimbing',
             'total_menunggu_nilai',
             'pengajuan_selesai',
-            'chart_labels', // Kirim ke View
-            'chart_data',   // Kirim ke View
-            'recent_activities' // Kirim ke View
+            'chart_labels',
+            'chart_data',
+            'recent_activities'
         ));
     }
 }

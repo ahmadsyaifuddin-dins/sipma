@@ -31,7 +31,6 @@ class AbsensiController extends Controller
         return view('admin.absensi.index', compact('data', 'tanggal'));
     }
 
-    // Fitur Edit Status (Untuk Koreksi/Validasi Admin)
     public function update(Request $request, $id)
     {
         $absensi = Absensi::findOrFail($id);
@@ -42,7 +41,6 @@ class AbsensiController extends Controller
 
         $absensi->update([
             'status' => $request->status,
-            // Jika diubah jadi Alfa/Hadir, keterangan sakit/izin bisa dinull-kan atau biarkan sebagai history
         ]);
 
         return back()->with('success', 'Status absensi berhasil diperbarui.');

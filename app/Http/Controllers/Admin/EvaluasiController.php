@@ -87,7 +87,7 @@ class EvaluasiController extends Controller
 
         // Update Status Peserta
         $peserta = Peserta::findOrFail($peserta_id);
-        if ($peserta->status == 'aktif') {
+        if (in_array($peserta->status, ['aktif', 'menunggu_nilai'])) {
             $peserta->update(['status' => 'selesai']);
         }
 
@@ -103,10 +103,12 @@ class EvaluasiController extends Controller
     }
 
     // 5. UPDATE NILAI
+    // 5. UPDATE NILAI
     public function update(Request $request, $id)
     {
         $evaluasi = Evaluasi::findOrFail($id);
 
+        // 1. Validasi
         $request->validate([
             'nilai_disiplin' => 'required|numeric|min:0|max:100',
             'nilai_etika' => 'required|numeric|min:0|max:100',
@@ -118,9 +120,10 @@ class EvaluasiController extends Controller
             'nilai_komunikasi' => 'required|numeric|min:0|max:100',
             'nilai_inisiatif' => 'required|numeric|min:0|max:100',
             'nilai_adaptasi' => 'required|numeric|min:0|max:100',
+            'catatan_pembimbing' => 'nullable|string', // Jangan lupa validasi catatan juga
         ]);
 
-        // Hitung ulang
+        // 2. Hitung Ulang Rata-rata
         $total = $request->nilai_disiplin + $request->nilai_etika + $request->nilai_motivasi +
                  $request->nilai_kualitas + $request->nilai_penguasaan + $request->nilai_produktivitas +
                  $request->nilai_kerjasama + $request->nilai_komunikasi + $request->nilai_inisiatif +
@@ -129,6 +132,7 @@ class EvaluasiController extends Controller
         $rataRata = $total / 10;
         $predikat = $this->hitungPredikat($rataRata);
 
+        // 3. Update Data Evaluasi
         $evaluasi->update([
             'nilai_disiplin' => $request->nilai_disiplin,
             'nilai_etika' => $request->nilai_etika,
@@ -146,7 +150,15 @@ class EvaluasiController extends Controller
             'catatan_pembimbing' => $request->catatan_pembimbing,
         ]);
 
-        return redirect()->route('admin.evaluasi.index')->with('success', 'Nilai evaluasi diperbarui.');
+        // Ambil data peserta dari relasi evaluasi
+        $peserta = $evaluasi->peserta;
+
+        // Pastikan status jadi 'selesai' jika masih 'menunggu_nilai' atau 'aktif'
+        if ($peserta && in_array($peserta->status, ['aktif', 'menunggu_nilai'])) {
+            $peserta->update(['status' => 'selesai']);
+        }
+
+        return redirect()->route('admin.evaluasi.index')->with('success', 'Nilai evaluasi berhasil diperbarui.');
     }
 
     public function show($id)

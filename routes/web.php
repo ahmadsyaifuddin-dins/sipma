@@ -53,8 +53,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
         Route::get('/absensi', [AdminAbsensiController::class, 'index'])->name('admin.absensi.index');
-        Route::put('/absensi/{id}', [AbsensiController::class, 'update'])->name('admin.absensi.update'); // Ini numpang update punya pemagang, oke
-        Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
+        Route::put('/absensi/{id}', [AdminAbsensiController::class, 'update'])->name('admin.absensi.update');
+        Route::delete('/absensi/{id}', [AdminAbsensiController::class, 'destroy'])->name('admin.absensi.destroy');
 
         Route::resource('pembimbing', PembimbingController::class, ['as' => 'admin']);
         Route::resource('peserta', PesertaController::class, ['as' => 'admin'])->except(['create', 'store']);
@@ -114,6 +114,7 @@ Route::middleware('auth')->group(function () {
 
         // Evaluasi (Rapor)
         Route::get('/evaluasi', [EvaluasiController::class, 'index'])->name('pemagang.evaluasi.index');
+        Route::get('/evaluasi/cetak', [EvaluasiController::class, 'cetakPdf'])->name('pemagang.evaluasi.cetak');
     });
 
     // --- PROFILE ---

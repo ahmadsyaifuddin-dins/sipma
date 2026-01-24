@@ -28,6 +28,7 @@
                         <th class="px-4 py-3">Pembimbing</th>
                         <th class="px-4 py-3 text-center">Nilai Rata-Rata</th>
                         <th class="px-4 py-3 text-center">Predikat</th>
+                        <th class="px-4 py-3 text-center">Status</th>
                         <th class="px-4 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -55,17 +56,34 @@
                                 @if ($item->evaluasi)
                                     <span
                                         class="px-2 py-1 text-xs font-bold leading-tight rounded-full 
-                                        {{ $item->evaluasi->predikat_huruf == 'A'
-                                            ? 'bg-green-100 text-green-700'
-                                            : ($item->evaluasi->predikat_huruf == 'B'
-                                                ? 'bg-blue-100 text-blue-700'
-                                                : 'bg-yellow-100 text-yellow-700') }}">
+                                    {{ $item->evaluasi->predikat_huruf == 'A'
+                                        ? 'bg-green-100 text-green-700'
+                                        : ($item->evaluasi->predikat_huruf == 'B'
+                                            ? 'bg-blue-100 text-blue-700'
+                                            : 'bg-yellow-100 text-yellow-700') }}">
                                         {{ $item->evaluasi->predikat_huruf }} -
                                         {{ $item->evaluasi->predikat_keterangan }}
                                     </span>
                                 @else
                                     -
                                 @endif
+                            </td>
+
+                            {{-- TAMPILAN KOLOM STATUS --}}
+                            <td class="px-4 py-3 text-center">
+                                @php
+                                    $statusColors = [
+                                        'aktif' => 'bg-green-100 text-green-700',
+                                        'menunggu_nilai' => 'bg-blue-100 text-blue-700',
+                                        'selesai' => 'bg-indigo-100 text-indigo-700',
+                                        'ditolak' => 'bg-red-100 text-red-700',
+                                    ];
+                                    $BadgeColor = $statusColors[$item->status] ?? 'bg-gray-100 text-gray-600';
+                                @endphp
+                                <span
+                                    class="px-2 py-1 font-semibold leading-tight rounded-full text-xs {{ $BadgeColor }}">
+                                    {{ ucwords(str_replace('_', ' ', $item->status)) }}
+                                </span>
                             </td>
 
                             <td class="px-4 py-3 text-center">
@@ -83,7 +101,8 @@
                                         </a>
 
                                         <form action="{{ route('admin.evaluasi.destroy', $item->evaluasi->id) }}"
-                                            method="POST" class="inline delete-form">
+                                            method="POST" class="inline delete-form"
+                                            onsubmit="return confirm('Yakin hapus nilai ini? Status peserta akan kembali Aktif.');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700 transition"
@@ -109,6 +128,7 @@
             {{ $peserta->links() }}
         </div>
 
+        {{-- MODAL --}}
         <div x-show="open" style="display: none;"
             class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4"
             x-transition>
