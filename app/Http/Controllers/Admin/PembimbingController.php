@@ -12,8 +12,7 @@ class PembimbingController extends Controller
 {
     public function index()
     {
-        // Ambil data terbaru
-        $data = Pembimbing::latest()->get();
+        $data = Pembimbing::latest()->paginate(10);
 
         return view('admin.pembimbing.index', compact('data'));
     }
@@ -41,6 +40,11 @@ class PembimbingController extends Controller
         $listBidang = BidangHelper::getAll();
 
         return view('admin.pembimbing.edit', compact('pembimbing', 'listBidang'));
+    }
+
+    public function show(Pembimbing $pembimbing)
+    {
+        return view('admin.pembimbing.show', compact('pembimbing'));
     }
 
     public function update(UpdatePembimbingRequest $request, Pembimbing $pembimbing)

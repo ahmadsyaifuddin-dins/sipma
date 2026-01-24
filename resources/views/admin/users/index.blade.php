@@ -64,8 +64,7 @@
 
                                     @if (Auth::id() !== $user->id)
                                         <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                            class="inline"
-                                            onsubmit="return confirm('Yakin ingin menghapus Admin {{ $user->name }}?');">
+                                            class="inline delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700 transition"
