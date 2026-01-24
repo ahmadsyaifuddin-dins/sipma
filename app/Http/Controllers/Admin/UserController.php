@@ -13,9 +13,8 @@ class UserController extends Controller
 {
     public function index()
     {
-        // FILTER: Hanya ambil user dengan role 'admin' atau 'pembimbing'
         // Pemagang tidak ikut dipanggil.
-        $users = User::whereIn('role', ['admin', 'pembimbing'])
+        $users = User::whereIn('role', ['admin'])
             ->latest()
             ->paginate(10);
 
@@ -37,7 +36,7 @@ class UserController extends Controller
         ]);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Pengguna baru berhasil ditambahkan.');
+            ->with('success', 'Administrator baru berhasil ditambahkan.');
     }
 
     public function edit(User $user)
@@ -61,7 +60,7 @@ class UserController extends Controller
         $user->update($data);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Data pengguna berhasil diperbarui.');
+            ->with('success', 'Data Administrator berhasil diperbarui.');
     }
 
     public function destroy(User $user)
@@ -74,6 +73,6 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Pengguna berhasil dihapus.');
+            ->with('success', 'Administrator berhasil dihapus.');
     }
 }
