@@ -9,7 +9,14 @@ class StaticData
      */
     public static function getSemesters()
     {
-        return [4, 5, 6, 7, 8];
+        return [
+            12 => 'Kelas 12 SMA/SMK',
+            4 => 'Semester 4',
+            5 => 'Semester 5',
+            6 => 'Semester 6',
+            7 => 'Semester 7',
+            8 => 'Semester 8',
+        ];
     }
 
     /**

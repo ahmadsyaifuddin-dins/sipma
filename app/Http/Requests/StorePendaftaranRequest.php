@@ -20,7 +20,7 @@ class StorePendaftaranRequest extends FormRequest
             'institusi' => 'required|string|max:255',
             'jurusan' => 'required|string|max:255',
             // VALIDASI BARU: SEMESTER
-            'semester' => 'required|integer|in:4,5,6,7,8',
+            'semester' => 'required|integer|in:4,5,6,7,8,12',
 
             'no_hp' => 'required|numeric',
             'alamat' => 'required|string',
@@ -43,7 +43,7 @@ class StorePendaftaranRequest extends FormRequest
 
             // Pesan Error Custom untuk Semester
             'semester.required' => 'Semester wajib dipilih.',
-            'semester.in' => 'Pilihan semester tidak valid (Hanya semester 4-8).',
+            'semester.in' => 'Pilihan semester tidak valid (Hanya semester 4-8 dan anak SMK/SMA Kelas 12).',
         ];
     }
 }

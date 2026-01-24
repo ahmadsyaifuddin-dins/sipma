@@ -28,10 +28,12 @@
         <div class="relative">
             <select name="semester" required
                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition appearance-none bg-white">
-                <option value="" disabled selected>Pilih Semester</option>
-                @foreach (\App\Helpers\StaticData::getSemesters() as $smt)
-                    <option value="{{ $smt }}">Semester {{ $smt }}</option>
+                <option value="" disabled selected>Pilih Tingkat Pendidikan</option>
+
+                @foreach (\App\Helpers\StaticData::getSemesters() as $val => $label)
+                    <option value="{{ $val }}">{{ $label }}</option>
                 @endforeach
+
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
                 <i class="fas fa-chevron-down text-xs"></i>
