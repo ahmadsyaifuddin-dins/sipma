@@ -43,7 +43,14 @@
                 <x-slot name="icon">
                     <i class="fas fa-user-check text-lg w-6 text-center"></i>
                 </x-slot>
-                {{ __('Verifikasi Pendaftaran') }}
+                {{ __('Verifikasi Pendaftar') }}
+            </x-nav-link>
+
+            <x-nav-link href="{{ route('admin.penempatan.index') }}" :active="request()->routeIs('admin.penempatan.*')">
+                <x-slot name="icon">
+                    <i class="fas fa-map-marked-alt text-lg w-6 text-center"></i>
+                </x-slot>
+                {{ __('Data Penempatan') }}
             </x-nav-link>
 
             <x-nav-link href="{{ route('admin.peserta.index') }}" :active="request()->routeIs('admin.peserta.*')">

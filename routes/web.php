@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\EvaluasiController as AdminEvaluasiController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\PembimbingController; // Tambah Alias biar gak bentrok
+use App\Http\Controllers\Admin\PenempatanController;
 use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VerifikasiController;
@@ -52,6 +53,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('admin.verifikasi.show');
         Route::post('/verifikasi/{id}/approve', [VerifikasiController::class, 'store'])->name('admin.verifikasi.approve');
         Route::delete('/verifikasi/{id}/reject', [VerifikasiController::class, 'destroy'])->name('admin.verifikasi.reject');
+
+        // Penempatan
+        Route::resource('penempatan', PenempatanController::class, ['as' => 'admin'])
+            ->only(['index', 'edit', 'update']);
 
         // Evaluasi
         Route::get('/evaluasi', [AdminEvaluasiController::class, 'index'])->name('admin.evaluasi.index');
