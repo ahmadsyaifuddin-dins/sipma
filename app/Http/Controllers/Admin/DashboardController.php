@@ -52,6 +52,12 @@ class DashboardController extends Controller
                 ];
             });
 
+        $latest_peserta = Peserta::with('user')
+            ->where('status', 'pending')
+            ->latest() // Urutkan dari yang paling baru
+            ->take(5)
+            ->get();
+
         // Ambil 3 Pendaftar Terakhir
         $log_daftar = Peserta::latest()
             ->take(3)
@@ -77,7 +83,8 @@ class DashboardController extends Controller
             'pengajuan_selesai',
             'chart_labels',
             'chart_data',
-            'recent_activities'
+            'recent_activities',
+            'latest_peserta',
         ));
     }
 }

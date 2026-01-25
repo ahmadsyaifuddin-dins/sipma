@@ -38,11 +38,21 @@
                         <span class="text-xs text-gray-400 block">{{ $item->created_at->format('H:i') }}</span>
                     </td>
 
-                    {{-- KOLOM STATUS --}}
+                    {{-- KOLOM STATUS (DINAMIS) --}}
                     <td class="px-4 py-3 text-xs">
-                        <span
-                            class="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-full border border-orange-200">
-                            Pending
+                        @php
+                            $statusColors = [
+                                'pending' => 'text-orange-700 bg-orange-100 border-orange-200',
+                                'aktif' => 'text-green-700 bg-green-100 border-green-200',
+                                'menunggu_nilai' => 'text-blue-700 bg-blue-100 border-blue-200',
+                                'selesai' => 'text-indigo-700 bg-indigo-100 border-indigo-200',
+                                'ditolak' => 'text-red-700 bg-red-100 border-red-200',
+                            ];
+                            $colorClass = $statusColors[$item->status] ?? 'text-gray-700 bg-gray-100 border-gray-200';
+                        @endphp
+
+                        <span class="px-2 py-1 font-semibold leading-tight rounded-full border {{ $colorClass }}">
+                            {{ ucwords(str_replace('_', ' ', $item->status)) }}
                         </span>
                     </td>
                 </tr>
