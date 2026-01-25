@@ -13,8 +13,9 @@ class UserController extends Controller
 {
     public function index()
     {
-        // Pemagang tidak ikut dipanggil.
-        $users = User::whereIn('role', ['admin'])
+        // Tampilkan SEMUA user (Admin & Pemagang)
+        // Urutkan admin dulu, baru pemagang, lalu berdasarkan tanggal terbaru
+        $users = User::orderByRaw("FIELD(role, 'admin', 'pemagang')")
             ->latest()
             ->paginate(10);
 
@@ -32,7 +33,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => 'admin', // Hardcode role admin biar aman
         ]);
 
         return redirect()->route('admin.users.index')
@@ -49,7 +50,7 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
+            'role' => $request->role ?? $user->role,
         ];
 
         // Cek jika password diisi, baru update passwordnya
@@ -60,7 +61,7 @@ class UserController extends Controller
         $user->update($data);
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Data Administrator berhasil diperbarui.');
+            ->with('success', 'Data Akun berhasil diperbarui.');
     }
 
     public function destroy(User $user)
@@ -73,6 +74,6 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Administrator berhasil dihapus.');
+            ->with('success', 'Akun pengguna berhasil dihapus.');
     }
 }

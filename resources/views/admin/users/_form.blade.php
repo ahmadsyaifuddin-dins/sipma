@@ -13,14 +13,28 @@
     <div class="mb-4">
         <x-form.label for="role" value="Role Akses" required="true" />
 
-        <select name="role"
-            class="w-full border-gray-300 rounded shadow-sm focus:ring-indigo-500 bg-gray-50 cursor-not-allowed"
-            readonly>
-            <option value="admin" selected>Administrator (Staff Dinas)</option>
+        {{-- LOGIKA ROLE DINAMIS --}}
+        @php
+            // Jika user ada (Edit), pakai role user tersebut. Jika baru (Create), default 'admin'.
+            $currentRole = $user->role ?? 'admin';
+            $roleLabel = $currentRole == 'admin' ? 'Administrator (Staff Dinas)' : 'Peserta Magang';
+        @endphp
+
+        {{-- 
+            Kita pakai input hidden untuk mengirim value yang sebenarnya 
+            karena tag <select disabled> tidak akan terkirim saat submit.
+        --}}
+        <input type="hidden" name="role" value="{{ $currentRole }}">
+
+        <select disabled
+            class="w-full border-gray-300 rounded shadow-sm focus:ring-indigo-500 bg-gray-100 text-gray-500 cursor-not-allowed">
+            <option value="{{ $currentRole }}" selected>
+                {{ $roleLabel }}
+            </option>
         </select>
 
         <p class="text-xs text-gray-500 mt-1">
-            <i class="fas fa-info-circle"></i> Modul ini khusus untuk menambahkan akun Administrator.
+            <i class="fas fa-lock"></i> Role akses tidak dapat diubah dari menu ini.
         </p>
     </div>
 
