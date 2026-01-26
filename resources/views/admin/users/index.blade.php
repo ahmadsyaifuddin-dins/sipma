@@ -9,10 +9,10 @@
                 <p class="text-xs text-gray-500">Kelola akun Administrator dan Pemagang.</p>
             </div>
 
-            <a href="{{ route('admin.users.create') }}"
+           <!--  <a href="{{ route('admin.users.create') }}"
                 class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md transition flex items-center gap-2">
                 <i class="fas fa-user-plus"></i> Tambah Admin Baru
-            </a>
+            </a> -->
         </div>
 
         <div class="w-full overflow-x-auto border rounded-lg">
