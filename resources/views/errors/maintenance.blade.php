@@ -218,7 +218,7 @@
                         </div>
                         <div>
                             <span class="block text-gray-400 text-[11px] uppercase tracking-wide mb-1">Constraint Signature</span>
-                            <span class="font-mono text-red-600 font-bold">{{ $signature ?? 'PAYMENT_REQUIRED' }}</span>
+                            <span class="font-mono text-red-600 font-bold">{{ $signature ?? '503' }}</span>
                         </div>
                         <div>
                             <span class="block text-gray-400 text-[11px] uppercase tracking-wide mb-1">Timestamp</span>
