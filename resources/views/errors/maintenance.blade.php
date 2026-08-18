@@ -471,7 +471,7 @@
 
             <div class="code-line">
                 <span class="label">ERROR_CODE</span>
-                <span class="value">503_PAYMENT_REQUIRED</span>
+                <span class="value">503</span>
             </div>
             <div class="code-line">
                 <span class="label">REFERENCE</span>
